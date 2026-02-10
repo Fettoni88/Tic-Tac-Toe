@@ -27,6 +27,21 @@ function init() {
     render();
 }
 
+function restartGame() {
+    fields = [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+    ];
+    render();
+}
+
 function render() {
     let html = "<table>";
 
@@ -103,35 +118,41 @@ function disableAllClicks() {
 }
 
 function drawWinningLine(combo) {
-    const positions = [
-        { x: 40,  y: 40  },
-        { x: 120, y: 40  },
-        { x: 200, y: 40  },
-        { x: 40,  y: 120 },
-        { x: 120, y: 120 },
-        { x: 200, y: 120 },
-        { x: 40,  y: 200 },
-        { x: 120, y: 200 },
-        { x: 200, y: 200 },
-    ];
+    const cellSize = 80;
+    const lineSize = 5;
 
-    const start = positions[combo[0]];
-    const end   = positions[combo[2]];
+    const step = cellSize + lineSize;
+    const center = cellSize / 2;
+
+    function getCenter(index) {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+
+        return {
+            x: col * step + center,
+            y: row * step + center
+        };
+    }
+
+    const start = getCenter(combo[0]);
+    const end = getCenter(combo[2]);
 
     const svg = `
-<svg width="240" height="240"
-     style="position:absolute; pointer-events:none;">
+<svg
+    width="250"
+    height="250"
+    style="position:absolute; top:0; left:0; pointer-events:none;">
   <line
     x1="${start.x}" y1="${start.y}"
     x2="${end.x}"   y2="${end.y}"
     stroke="white"
     stroke-width="6"
     stroke-linecap="round"
-    stroke-dasharray="300"
-    stroke-dashoffset="300">
+    stroke-dasharray="400"
+    stroke-dashoffset="400">
     <animate
       attributeName="stroke-dashoffset"
-      from="300"
+      from="400"
       to="0"
       dur="0.2s"
       fill="freeze" />
